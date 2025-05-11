@@ -21,6 +21,8 @@ async function fetchData<T>(url: string): Promise<T> {
   }
 }
 
+// This function might still be useful if some data sources provide duration in seconds
+// and others provide it as a formatted string.
 function formatDuration(totalSeconds?: number): string | undefined {
   if (totalSeconds === undefined || isNaN(totalSeconds) || totalSeconds < 0) {
     return undefined;
@@ -32,11 +34,11 @@ function formatDuration(totalSeconds?: number): string | undefined {
   if (hours > 0) {
     durationString += `${hours}h `;
   }
-  if (minutes > 0 || (hours === 0 && totalSeconds > 0) ) { // Show minutes if > 0 or if hours is 0 but totalSeconds > 0
+  if (minutes > 0 || (hours === 0 && totalSeconds > 0) ) { 
     durationString += `${minutes}min`;
   }
   
-  if (durationString.trim() === "" && totalSeconds > 0) return `${totalSeconds}s`; // for durations less than a minute
+  if (durationString.trim() === "" && totalSeconds > 0) return `${totalSeconds}s`; 
   if (durationString.trim() === "" && totalSeconds === 0) return "0min";
 
   return durationString.trim() || undefined;
@@ -52,7 +54,7 @@ export async function getCreators(): Promise<Creator[]> {
     id: creator.id,
     name: creator.name,
     bio: creator.bio,
-    avatarUrl: creator.avatar_url,
+    avatarUrl: creator.avatar_url, // Assuming creators.json still uses avatar_url
     email: creator.email,
     socialMediaLinks: creator.social_media_links,
     contentIds: creator.content_ids,
@@ -66,35 +68,45 @@ export async function getContentItems(): Promise<ContentItem[]> {
   }
 
   const rawContentItems = await fetchData<any[]>(CONTENT_JSON_URL);
-  const creators = await getCreators(); // Fetch all creators to resolve names
+  const creators = await getCreators(); 
 
   const items = rawContentItems.map(item => {
-    const itemCreators = item.creator_ids
-      ?.map((creatorId: string) => {
-        const foundCreator = creators.find(c => c.id === creatorId);
-        return foundCreator ? { id: foundCreator.id, name: foundCreator.name, role: undefined } : null;
-      })
-      .filter(Boolean) as { id: string; name: string; role?: string }[] | undefined;
+    const itemCreators = item.creatorId // Use new single creatorId field
+      ? (() => {
+          const foundCreator = creators.find(c => c.id === item.creatorId);
+          return foundCreator ? [{ id: foundCreator.id, name: foundCreator.name, role: undefined as string | undefined }] : undefined;
+        })()
+      : (item.creator_ids && Array.isArray(item.creator_ids) // Fallback to old creator_ids if new one is not present
+          ? item.creator_ids.map((creatorId: string) => {
+              const foundCreator = creators.find(c => c.id === creatorId);
+              return foundCreator ? { id: foundCreator.id, name: foundCreator.name, role: undefined as string | undefined } : null;
+            }).filter(Boolean)
+          : undefined);
+
+    const resolvedGenre = typeof item.genre === 'string' 
+      ? [item.genre] 
+      : (Array.isArray(item.genre) ? item.genre : (Array.isArray(item.genres) ? item.genres : undefined));
+
+    const resolvedDuration = item.duration || formatDuration(item.duration_in_seconds);
 
     return {
       id: item.id,
       title: item.title,
       description: item.description,
-      type: item.type === 'short_film' ? 'movie' : item.type, // Map 'short_film' to 'movie'
-      imageUrl: item.poster_image_url || `https://picsum.photos/seed/${item.id}/400/600`, // Fallback image
-      videoUrl: item.video_url,
-      genre: item.genres,
-      rating: item.rating, // Assuming rating might not be present
-      duration: formatDuration(item.duration_in_seconds),
+      type: item.type === 'short_film' ? 'movie' : item.type,
+      imageUrl: item.posterUrl || `https://picsum.photos/seed/${item.id}/400/600`, // Use item.posterUrl
+      videoUrl: item.videoUrl, // Use item.videoUrl
+      genre: resolvedGenre,
+      rating: item.rating,
+      duration: resolvedDuration,
       language: item.language,
-      releaseDate: item.production_date, // Map production_date to releaseDate
+      releaseDate: item.production_date || item.release_date, // Check both potential date fields
       creators: itemCreators,
       tags: item.tags,
       cast: item.actors?.map((actorName: string) => ({ name: actorName, role: 'Actor' })) || [],
-      // Seasons and episodes are not in the short_film.json
       seasons: item.type === 'series' ? item.seasons : undefined, 
-      creatorIds: item.creator_ids, // Keep raw IDs if needed elsewhere
-      durationInSeconds: item.duration_in_seconds,
+      creatorIds: item.creatorId ? [item.creatorId] : item.creator_ids, // Store creatorId(s)
+      durationInSeconds: item.duration_in_seconds, // Keep if available, used by formatDuration fallback
     };
   });
   allContentItemsCache = items;
@@ -103,7 +115,7 @@ export async function getContentItems(): Promise<ContentItem[]> {
 
 
 export async function getContentById(id: string): Promise<ContentItem | undefined> {
-  const items = await getContentItems(); // This will fetch and resolve creators internally now
+  const items = await getContentItems(); 
   return items.find(item => item.id === id);
 }
 
@@ -119,18 +131,17 @@ export async function getRelatedContent(contentId: string, type?: 'movie' | 'ser
   if (!currentContent) return [];
 
   let related = allContent.filter(item => {
-    if (item.id === contentId) return false; // Exclude current item
-    if (type && item.type !== type) return false; // Match type if specified
+    if (item.id === contentId) return false; 
+    if (type && item.type !== type) return false; 
 
     if (currentGenres && currentGenres.length > 0 && item.genre && item.genre.length > 0) {
       return item.genre.some(g => currentGenres.includes(g));
     }
-    if (type) return item.type === type; // Fallback to type if no genre match
+    if (type) return item.type === type; 
 
     return true; 
   });
 
-  // Simple shuffle and limit
   return related.sort(() => 0.5 - Math.random()).slice(0, 10);
 }
 
@@ -147,9 +158,8 @@ export async function searchContent(query: string): Promise<ContentItem[]> {
   const lowerCaseQuery = query.toLowerCase();
   return items.filter(item =>
     item.title.toLowerCase().includes(lowerCaseQuery) ||
-    item.description.toLowerCase().includes(lowerCaseQuery) ||
+    (item.description && item.description.toLowerCase().includes(lowerCaseQuery)) ||
     (item.genre && item.genre.some(g => g.toLowerCase().includes(lowerCaseQuery))) ||
     (item.tags && item.tags.some(t => t.toLowerCase().includes(lowerCaseQuery)))
   );
 }
-

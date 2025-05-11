@@ -1,15 +1,15 @@
+
 import { getContentById, getRelatedContent } from "@/lib/data";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Tv, CalendarDays, Star, Clapperboard, Users, MessageSquare, Share2, Play, EyeIcon } from "lucide-react";
+import { Star, Share2 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import WishlistButton from "@/components/content/wishlist-button";
 import PlayClientButton from "@/components/content/play-client-button";
-import ReviewSection from "@/components/content/review-section";
 import { Button } from "@/components/ui/button";
 import WishlistContentCard from "@/components/content/wishlist-content-card";
 
@@ -29,10 +29,6 @@ export async function generateMetadata({ params }: SeriesPageProps) {
     description: series.description ? series.description.substring(0, 160) : `Details for ${series.title}`,
   };
 }
-
-// Dummy data for view count and review count
-const viewCount = 55432; // Dummy
-const reviewCount = 288; // Dummy
 
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const series = await getContentById(params.seriesId);
@@ -85,18 +81,9 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                 <Star className="mr-1 h-4 w-4 text-yellow-400 fill-yellow-400" /> {series.rating.toFixed(1)}
               </span>
             )}
-             <span className="flex items-center">
-              <Users className="mr-1 h-4 w-4" /> ({reviewCount})
-            </span>
-            <span className="flex items-center">
-               <EyeIcon className="mr-1 h-4 w-4" /> {viewCount.toLocaleString()}
-            </span>
           </div>
           
           <div className="flex flex-wrap gap-2 mb-6">
-            <Button variant="outline">
-              <MessageSquare className="mr-2 h-4 w-4" /> Rate & Review
-            </Button>
              <WishlistButton contentItem={series} variant="outline" />
             <Button variant="outline">
               <Share2 className="mr-2 h-4 w-4" /> Share
@@ -170,7 +157,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
               {seriesCreators.map((creator) => creator && (
                 <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
                   <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
-                    <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face"/>
+                    <AvatarImage src={creator.avatarUrl || `https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face"/>
                     <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
                   </Avatar>
                   <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
@@ -183,9 +170,6 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
           </CardContent>
         </Card>
       )}
-
-      {/* Reviews Section */}
-      <ReviewSection contentId={series.id} contentType="series" />
 
       {/* More Like This Section */}
       {relatedSeries.length > 0 && (

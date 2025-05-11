@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Film, Search, UserCircle, LogIn, LogOut, Sun, Moon, Menu, Shuffle, ChevronDown, Tv, Video, Clapperboard, Layers, ShieldQuestion } from "lucide-react";
+import { Search, UserCircle, LogIn, LogOut, Sun, Moon, Menu, Shuffle, ChevronDown, Tv, Video, Clapperboard, Layers, ShieldQuestion, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,7 +14,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/firebase-auth-context";
@@ -156,7 +155,6 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Film className="h-6 w-6 text-primary" />
           <span className="font-bold sm:inline-block">Gunvor.TV</span>
         </Link>
 
@@ -301,4 +299,3 @@ export default function Header() {
     </header>
   );
 }
-

@@ -1,14 +1,14 @@
+
 import { getContentById, getRelatedContent } from "@/lib/data";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Film, Globe, CalendarDays, Users, Star, MessageSquare, Share2, Play, EyeIcon } from "lucide-react";
+import { Star, Share2 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import WishlistButton from "@/components/content/wishlist-button";
 import PlayClientButton from "@/components/content/play-client-button";
-import ReviewSection from "@/components/content/review-section";
 import { Button } from "@/components/ui/button";
 import WishlistContentCard from "@/components/content/wishlist-content-card";
 
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: MoviePageProps) {
   };
 }
 
-// Dummy data for behind the scenes and view count, as it's not in current data model
+// Dummy data for behind the scenes, as it's not in current data model
 const behindTheScenesImages = [
   "https://picsum.photos/seed/bts1/300/200",
   "https://picsum.photos/seed/bts2/300/200",
@@ -38,8 +38,7 @@ const behindTheScenesImages = [
   "https://picsum.photos/seed/bts5/300/200",
   "https://picsum.photos/seed/bts6/300/200",
 ];
-const viewCount = 76543; // Dummy
-const reviewCount = 313; // Dummy
+
 
 export default async function MoviePage({ params }: MoviePageProps) {
   const movie = await getContentById(params.movieId);
@@ -86,18 +85,9 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 <Star className="mr-1 h-4 w-4 text-yellow-400 fill-yellow-400" /> {movie.rating.toFixed(1)}
               </span>
             )}
-            <span className="flex items-center">
-              <Users className="mr-1 h-4 w-4" /> ({reviewCount})
-            </span>
-            <span className="flex items-center">
-               <EyeIcon className="mr-1 h-4 w-4" /> {viewCount.toLocaleString()}
-            </span>
           </div>
           
           <div className="flex flex-wrap gap-2 mb-6">
-            <Button variant="outline">
-              <MessageSquare className="mr-2 h-4 w-4" /> Rate & Review
-            </Button>
             <WishlistButton contentItem={movie} variant="outline" />
             <Button variant="outline">
               <Share2 className="mr-2 h-4 w-4" /> Share
@@ -110,15 +100,16 @@ export default async function MoviePage({ params }: MoviePageProps) {
       </div>
 
       {/* Behind the Scenes - Placeholder */}
-      {/* This section would ideally use data from movie.behindTheScenesImages if available */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Behind the Scenes</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {behindTheScenesImages.map((src, index) => (
-            <Image key={index} src={src} alt={`Behind the scenes ${index + 1}`} width={300} height={200} className="rounded-md object-cover aspect-video" data-ai-hint="movie scene still"/>
-          ))}
+      {movie.behindTheScenesImages && movie.behindTheScenesImages.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Behind the Scenes</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {movie.behindTheScenesImages.map((src, index) => (
+              <Image key={index} src={src} alt={`Behind the scenes ${index + 1}`} width={300} height={200} className="rounded-md object-cover aspect-video" data-ai-hint="movie scene still"/>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Details Section */}
        <div className="mb-8 p-6 bg-card rounded-lg shadow-md">
@@ -148,7 +139,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
               {movieCreators.map((creator) => creator && (
                 <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
                   <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
-                    <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face"/>
+                    <AvatarImage src={creator.avatarUrl || `https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face"/>
                     <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
                   </Avatar>
                   <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
@@ -161,9 +152,6 @@ export default async function MoviePage({ params }: MoviePageProps) {
           </CardContent>
         </Card>
       )}
-
-      {/* Reviews Section */}
-      <ReviewSection contentId={movie.id} contentType="movie" />
 
       {/* More Like This Section */}
       {relatedMovies.length > 0 && (
