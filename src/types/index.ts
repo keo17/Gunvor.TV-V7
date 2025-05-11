@@ -19,6 +19,9 @@ export interface ContentItem {
   // Raw fields from JSON, might be useful for intermediate processing
   creatorIds?: string[]; 
   durationInSeconds?: number;
+  viewCount?: number; // Added for new layout
+  reviewCount?: number; // Added for new layout
+  behindTheScenesImages?: string[]; // Added for new layout
 }
 
 export interface Season {

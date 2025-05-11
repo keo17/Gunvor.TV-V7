@@ -1,14 +1,16 @@
-import { getContentById, getRelatedContent, getCreators } from "@/lib/data";
+import { getContentById, getRelatedContent } from "@/lib/data";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Film, Globe, CalendarDays, Users, Star } from "lucide-react";
+import { Clock, Film, Globe, CalendarDays, Users, Star, MessageSquare, Share2, Play, EyeIcon } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import WishlistButton from "@/components/content/wishlist-button"; 
-import PlayClientButton from "@/components/content/play-client-button"; 
+import WishlistButton from "@/components/content/wishlist-button";
+import PlayClientButton from "@/components/content/play-client-button";
 import ReviewSection from "@/components/content/review-section";
+import { Button } from "@/components/ui/button";
+import WishlistContentCard from "@/components/content/wishlist-content-card";
 
 interface MoviePageProps {
   params: {
@@ -27,6 +29,18 @@ export async function generateMetadata({ params }: MoviePageProps) {
   };
 }
 
+// Dummy data for behind the scenes and view count, as it's not in current data model
+const behindTheScenesImages = [
+  "https://picsum.photos/seed/bts1/300/200",
+  "https://picsum.photos/seed/bts2/300/200",
+  "https://picsum.photos/seed/bts3/300/200",
+  "https://picsum.photos/seed/bts4/300/200",
+  "https://picsum.photos/seed/bts5/300/200",
+  "https://picsum.photos/seed/bts6/300/200",
+];
+const viewCount = 76543; // Dummy
+const reviewCount = 313; // Dummy
+
 export default async function MoviePage({ params }: MoviePageProps) {
   const movie = await getContentById(params.movieId);
 
@@ -35,174 +49,133 @@ export default async function MoviePage({ params }: MoviePageProps) {
   }
 
   const relatedMovies = await getRelatedContent(movie.id, 'movie', movie.genre);
-  // Creators are now populated directly in 'movie.creators' by getContentById
   const movieCreators = movie.creators || [];
 
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Hero Section */}
-      <div className="relative mb-8 md:mb-12 rounded-lg overflow-hidden shadow-xl min-h-[60vh] md:min-h-[70vh] flex items-end p-6 md:p-10 bg-background">
-        <div className="absolute inset-0 z-0">
+      <div className="grid md:grid-cols-3 gap-8 mb-8">
+        {/* Left Column: Poster */}
+        <div className="md:col-span-1">
           <Image
-            src={movie.imageUrl || `https://picsum.photos/seed/${movie.id}/1200/800`}
-            alt={movie.title}
-            fill
-            className="object-cover brightness-50"
+            src={movie.imageUrl || `https://picsum.photos/seed/${movie.id}/400/600`}
+            alt={`${movie.title} Poster`}
+            width={400}
+            height={600}
+            className="rounded-lg shadow-xl object-cover aspect-[2/3] w-full"
             priority
-            data-ai-hint="movie background"
+            data-ai-hint="movie poster"
           />
-           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
         </div>
 
-        <div className="relative z-10 grid md:grid-cols-3 gap-8 items-end">
-          <div className="md:col-span-1 hidden md:block">
-            <Image
-              src={movie.imageUrl || `https://picsum.photos/seed/${movie.id}/400/600`}
-              alt={`${movie.title} Poster`}
-              width={400}
-              height={600}
-              className="rounded-lg shadow-2xl object-cover aspect-[2/3]"
-              data-ai-hint="movie poster"
-            />
+        {/* Right Column: Details */}
+        <div className="md:col-span-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-1">{movie.title}</h1>
+          <div className="flex flex-wrap items-center text-sm text-muted-foreground space-x-2 mb-4">
+            {movie.duration && <span>{movie.duration}</span>}
+            {movie.genre?.[0] && <span>• {movie.genre[0]}</span>}
+            {movie.language && <span>• {movie.language}</span>}
           </div>
-          <div className="md:col-span-2">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">{movie.title}</h1>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {movie.genre?.map((g) => (
-                <Badge key={g} variant="outline" className="text-sm bg-background/70 backdrop-blur-sm">{g}</Badge>
+
+          <PlayClientButton videoUrl={movie.videoUrl} className="w-full md:w-auto mb-4 bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
+             Play
+          </PlayClientButton>
+
+          <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-4">
+            {movie.rating && (
+              <span className="flex items-center">
+                <Star className="mr-1 h-4 w-4 text-yellow-400 fill-yellow-400" /> {movie.rating.toFixed(1)}
+              </span>
+            )}
+            <span className="flex items-center">
+              <Users className="mr-1 h-4 w-4" /> ({reviewCount})
+            </span>
+            <span className="flex items-center">
+               <EyeIcon className="mr-1 h-4 w-4" /> {viewCount.toLocaleString()}
+            </span>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button variant="outline">
+              <MessageSquare className="mr-2 h-4 w-4" /> Rate & Review
+            </Button>
+            <WishlistButton contentItem={movie} variant="outline" />
+            <Button variant="outline">
+              <Share2 className="mr-2 h-4 w-4" /> Share
+            </Button>
+          </div>
+
+          <p className="text-foreground/80 mb-8">{movie.description}</p>
+
+        </div>
+      </div>
+
+      {/* Behind the Scenes - Placeholder */}
+      {/* This section would ideally use data from movie.behindTheScenesImages if available */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Behind the Scenes</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {behindTheScenesImages.map((src, index) => (
+            <Image key={index} src={src} alt={`Behind the scenes ${index + 1}`} width={300} height={200} className="rounded-md object-cover aspect-video" data-ai-hint="movie scene still"/>
+          ))}
+        </div>
+      </div>
+      
+      {/* Details Section */}
+       <div className="mb-8 p-6 bg-card rounded-lg shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+            {movie.releaseDate && <p><span className="font-semibold text-muted-foreground">Year • </span> {new Date(movie.releaseDate).getFullYear()}</p>}
+            {movie.genre && movie.genre.length > 0 && <p><span className="font-semibold text-muted-foreground">Genre • </span> {movie.genre.join(', ')}</p>}
+            {movie.language && <p><span className="font-semibold text-muted-foreground">Languages • </span> {movie.language}</p>}
+            {movie.duration && <p><span className="font-semibold text-muted-foreground">Duration • </span> {movie.duration}</p>}
+             {movie.tags && movie.tags.length > 0 && (
+                <div className="md:col-span-2">
+                  <span className="font-semibold text-muted-foreground">Tags • </span>
+                    {movie.tags.map(tag => <Badge key={tag} variant="secondary" className="mr-1 mb-1">{tag}</Badge>)}
+                </div>
+              )}
+          </div>
+        </div>
+
+
+      {/* Creators Section */}
+      {movieCreators.length > 0 && (
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Creators</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {movieCreators.map((creator) => creator && (
+                <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
+                  <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
+                    <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face"/>
+                    <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
+                  </Avatar>
+                  <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
+                  {creator.role && (
+                    <p className="text-xs text-muted-foreground">{creator.role}</p>
+                  )}
+                </Link>
               ))}
             </div>
-            <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-6">
-              {movie.releaseDate && (
-                <span className="flex items-center"><CalendarDays className="mr-1.5 h-4 w-4" /> {new Date(movie.releaseDate).getFullYear()}</span>
-              )}
-              {movie.duration && (
-                <span className="flex items-center"><Clock className="mr-1.5 h-4 w-4" /> {movie.duration}</span>
-              )}
-              {movie.language && (
-                <span className="flex items-center"><Globe className="mr-1.5 h-4 w-4" /> {movie.language}</span>
-              )}
-              {movie.rating && (
-                <span className="flex items-center"><Star className="mr-1.5 h-4 w-4 text-yellow-400" /> {movie.rating.toFixed(1)}/10</span>
-              )}
-            </div>
-            <p className="text-base md:text-lg text-muted-foreground mb-6 line-clamp-4">{movie.description}</p>
-            <div className="flex flex-wrap gap-3 items-center">
-              <PlayClientButton videoUrl={movie.videoUrl} />
-              <WishlistButton contentItem={movie} />
-            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reviews Section */}
+      <ReviewSection contentId={movie.id} contentType="movie" />
+
+      {/* More Like This Section */}
+      {relatedMovies.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold mb-4">More Like This</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+            {relatedMovies.slice(0, 6).map(relatedItem => (
+               <WishlistContentCard key={relatedItem.id} item={relatedItem} />
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid md:grid-cols-12 gap-8">
-        <div className="md:col-span-8 space-y-8">
-          {/* Synopsis Card */}
-          {movie.description && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Synopsis</CardTitle>
-              </CardHeader>
-              <CardContent className="prose dark:prose-invert max-w-none">
-                <p>{movie.description}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Cast Section (from actors field) */}
-          {movie.cast && movie.cast.length > 0 && (
-             <Card>
-              <CardHeader>
-                <CardTitle>Cast</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
-                  {movie.cast.map((actor) => (
-                    <div key={actor.name} className="text-sm">
-                      <span className="font-medium">{actor.name}</span>
-                       {/* <span className="text-muted-foreground"> as {actor.role}</span> */}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-
-          {/* Creators Section */}
-          {movieCreators.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Creators</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {movieCreators.map((creator) => creator && (
-                    <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
-                      <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
-                        {/* Avatar URL might not be available for all creators in content item */}
-                        <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face" />
-                        <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
-                      </Avatar>
-                      <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
-                      {creator.role && (
-                        <p className="text-xs text-muted-foreground">{creator.role}</p>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          
-          {/* Reviews Section - Client Component */}
-          <ReviewSection contentId={movie.id} contentType="movie" />
-
-        </div>
-
-        {/* Sidebar for Related Content */}
-        <aside className="md:col-span-4 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div className="flex justify-between"><span>Type:</span> <span className="font-medium">{movie.type.charAt(0).toUpperCase() + movie.type.slice(1)}</span></div>
-              {movie.releaseDate && <div className="flex justify-between"><span>Released:</span> <span className="font-medium">{movie.releaseDate}</span></div>}
-              {movie.language && <div className="flex justify-between"><span>Language:</span> <span className="font-medium">{movie.language}</span></div>}
-              {movie.duration && <div className="flex justify-between"><span>Duration:</span> <span className="font-medium">{movie.duration}</span></div>}
-              {movie.tags && movie.tags.length > 0 && (
-                <div>
-                  <h4 className="font-medium mb-1 mt-2">Tags:</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {movie.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          
-          {relatedMovies.length > 0 && (
-             <Card>
-              <CardHeader>
-                <CardTitle>More Like This</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-4">
-                {relatedMovies.slice(0,5).map(relatedItem => (
-                    <Link key={relatedItem.id} href={`/${relatedItem.type}/${relatedItem.id}`} className="group flex gap-3 items-start p-2 -m-2 rounded-md hover:bg-muted/50 transition-colors">
-                        <Image src={relatedItem.imageUrl || `https://picsum.photos/seed/${relatedItem.id}/80/120`} alt={relatedItem.title} width={60} height={90} className="rounded aspect-[2/3] object-cover" data-ai-hint="movie poster"/>
-                        <div>
-                            <h4 className="font-medium text-sm group-hover:text-primary line-clamp-2">{relatedItem.title}</h4>
-                            <p className="text-xs text-muted-foreground line-clamp-1">{relatedItem.genre?.join(', ')}</p>
-                        </div>
-                    </Link>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-        </aside>
-      </div>
+      )}
     </div>
   );
 }
