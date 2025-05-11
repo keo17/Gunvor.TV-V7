@@ -18,8 +18,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/firebase-auth-context";
 import { signOutUser } from "@/lib/firebase/auth";
 import { useTheme } from "next-themes";
-import React, { useState } from "react";
-import { getRandomContentItem, searchContent } from "@/lib/data"; // Assuming searchContent exists
+import React, { useState, useEffect, useRef } from "react";
+import { getRandomContentItem, searchContent } from "@/lib/data";
 import type { ContentItem } from "@/types";
 
 export default function Header() {
@@ -29,6 +29,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ContentItem[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -36,9 +37,10 @@ export default function Header() {
   };
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    if (e.target.value.length > 2) {
-      const results = await searchContent(e.target.value);
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 2) {
+      const results = await searchContent(query);
       setSearchResults(results);
     } else {
       setSearchResults([]);
@@ -46,10 +48,25 @@ export default function Header() {
   };
 
   const handleSearchFocus = () => setIsSearchFocused(true);
-  const handleSearchBlur = () => {
-    // Delay blur to allow click on search results
-    setTimeout(() => setIsSearchFocused(false), 100);
-  };
+  
+  const handleResultClick = (item: ContentItem) => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsSearchFocused(false);
+    router.push(`/${item.type}/${item.id}`);
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchContainerRef]);
   
   const handleRandomShuffle = async () => {
     const randomItem = await getRandomContentItem();
@@ -63,7 +80,7 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/movies", label: "Movies" },
     { href: "/series", label: "Series" },
-    { href: "/collections", label: "Collections" },
+    // { href: "/collections", label: "Collections" }, // Removed
   ];
 
   return (
@@ -89,7 +106,7 @@ export default function Header() {
 
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           {/* Search Bar */}
-          <div className="relative w-full max-w-xs lg:max-w-sm">
+          <div className="relative w-full max-w-xs lg:max-w-sm" ref={searchContainerRef}>
             <Input
               type="search"
               placeholder="Search content..."
@@ -97,26 +114,27 @@ export default function Header() {
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
             />
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            {isSearchFocused && searchResults.length > 0 && (
-              <div className="absolute top-full mt-1 w-full rounded-md border bg-popover shadow-lg z-50 max-h-60 overflow-y-auto">
-                {searchResults.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/${item.type}/${item.id}`}
-                    className="block px-4 py-2 hover:bg-accent"
-                    onClick={() => { setSearchQuery(''); setSearchResults([]); }}
-                  >
-                    {item.title}
-                  </Link>
-                ))}
-              </div>
-            )}
-             {isSearchFocused && searchQuery.length > 2 && searchResults.length === 0 && (
-              <div className="absolute top-full mt-1 w-full rounded-md border bg-popover shadow-lg z-50 p-4 text-sm text-muted-foreground">
-                No results found for "{searchQuery}".
+            {isSearchFocused && searchQuery.length > 0 && (
+              <div className="absolute top-full mt-1 w-full rounded-md border bg-popover shadow-lg z-[60] max-h-60 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  searchResults.map((item) => (
+                    <button
+                      key={item.id}
+                      className="block w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground"
+                      onClick={() => handleResultClick(item)}
+                    >
+                      {item.title}
+                    </button>
+                  ))
+                ) : (
+                  searchQuery.length > 2 && (
+                    <div className="p-4 text-sm text-muted-foreground">
+                      No results found for "{searchQuery}".
+                    </div>
+                  )
+                )}
               </div>
             )}
           </div>

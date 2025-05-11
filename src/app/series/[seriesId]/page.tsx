@@ -1,13 +1,10 @@
-import { getContentById, getRelatedContent, getCreators } from "@/lib/data";
+import { getContentById, getRelatedContent } from "@/lib/data";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Tv, CalendarDays, Users, Star, PlayCircle, Heart, Clapperboard, Info } from "lucide-react";
-import ContentRow from "@/components/content/content-row";
+import { Tv, CalendarDays, Star, Clapperboard } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import WishlistButton from "@/components/content/wishlist-button";
@@ -27,7 +24,7 @@ export async function generateMetadata({ params }: SeriesPageProps) {
   }
   return {
     title: `${series.title} - Gunvor.TV`,
-    description: series.description.substring(0, 160),
+    description: series.description ? series.description.substring(0, 160) : `Details for ${series.title}`,
   };
 }
 
@@ -35,12 +32,11 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
   const series = await getContentById(params.seriesId);
 
   if (!series || series.type !== 'series') {
-    notFound();
+    notFound(); // This will likely be hit if the new data source only has 'short_film' mapped to 'movie'
   }
 
   const relatedSeries = await getRelatedContent(series.id, 'series', series.genre);
-  const allCreators = await getCreators();
-  const seriesCreators = series.creators?.map(sc => allCreators.find(ac => ac.id === sc.id)).filter(Boolean) || [];
+  const seriesCreators = series.creators || [];
   const totalEpisodes = series.seasons?.reduce((acc, season) => acc + season.episodes.length, 0) || 0;
 
   return (
@@ -93,7 +89,6 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             </div>
             <p className="text-base md:text-lg text-muted-foreground mb-6 line-clamp-4">{series.description}</p>
             <div className="flex flex-wrap gap-3 items-center">
-              {/* Play button might link to first episode or season page */}
               <PlayClientButton videoUrl={series.seasons?.[0]?.episodes?.[0]?.videoUrl || series.videoUrl} />
               <WishlistButton contentItem={series} />
             </div>
@@ -104,17 +99,17 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
       {/* Main Content Area */}
       <div className="grid md:grid-cols-12 gap-8">
         <div className="md:col-span-8 space-y-8">
-          {/* Synopsis Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Synopsis</CardTitle>
-            </CardHeader>
-            <CardContent className="prose dark:prose-invert max-w-none">
-              <p>{series.description}</p>
-            </CardContent>
-          </Card>
+          {series.description && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Synopsis</CardTitle>
+              </CardHeader>
+              <CardContent className="prose dark:prose-invert max-w-none">
+                <p>{series.description}</p>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* Episodes Section */}
           {series.seasons && series.seasons.length > 0 && (
             <Card>
               <CardHeader>
@@ -122,12 +117,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
-                  {series.seasons.map((season, seasonIndex) => (
+                  {series.seasons.map((season) => (
                     <AccordionItem value={`season-${season.seasonNumber}`} key={season.seasonNumber}>
                       <AccordionTrigger className="text-xl font-semibold hover:no-underline">Season {season.seasonNumber} ({season.episodes.length} episodes)</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-4 pt-2">
-                          {season.episodes.map((episode, episodeIndex) => (
+                          {season.episodes.map((episode) => (
                             <li key={episode.episodeNumber} className="p-4 border rounded-md hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start">
                                 <div>
@@ -148,7 +143,6 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             </Card>
           )}
 
-          {/* Creators Section */}
           {seriesCreators.length > 0 && (
             <Card>
               <CardHeader>
@@ -159,12 +153,12 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                    {seriesCreators.map((creator) => creator && (
                     <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
                       <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
-                        <AvatarImage src={creator.avatarUrl || `https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face" />
-                        <AvatarFallback>{creator.name.substring(0, 2)}</AvatarFallback>
+                        <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face" />
+                        <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
                       </Avatar>
                       <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
-                       {series.creators?.find(sc => sc.id === creator.id)?.role && (
-                        <p className="text-xs text-muted-foreground">{series.creators.find(sc => sc.id === creator.id)?.role}</p>
+                       {creator.role && (
+                        <p className="text-xs text-muted-foreground">{creator.role}</p>
                       )}
                     </Link>
                   ))}
@@ -173,12 +167,9 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             </Card>
           )}
 
-          {/* Reviews Section - Client Component */}
           <ReviewSection contentId={series.id} contentType="series" />
-
         </div>
 
-        {/* Sidebar for Related Content */}
         <aside className="md:col-span-4 space-y-6">
            <Card>
             <CardHeader>
@@ -189,7 +180,14 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
               {series.releaseDate && <div className="flex justify-between"><span>First Aired:</span> <span className="font-medium">{series.releaseDate}</span></div>}
               {series.seasons && <div className="flex justify-between"><span>Seasons:</span> <span className="font-medium">{series.seasons.length}</span></div>}
               {totalEpisodes > 0 && <div className="flex justify-between"><span>Total Episodes:</span> <span className="font-medium">{totalEpisodes}</span></div>}
-              {/* Add more details if available */}
+               {series.tags && series.tags.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-1 mt-2">Tags:</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {series.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -216,4 +214,3 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
     </div>
   );
 }
-

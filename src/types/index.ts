@@ -4,19 +4,21 @@ export interface ContentItem {
   id: string;
   title: string;
   description: string;
-  type: 'movie' | 'series';
-  imageUrl: string;
-  videoUrl: string;
-  genre: string[];
-  rating?: number; // Optional, might not be available for all items
+  type: 'movie' | 'series'; // 'short_film' will be mapped to 'movie'
+  imageUrl?: string; // Optional as it might not always be present
+  videoUrl?: string; // Optional
+  genre?: string[];
+  rating?: number; // Optional, may not be in new data
   duration?: string; // e.g., "2h 15min" or "45min"
   language?: string;
   releaseDate?: string; // e.g., "2023-10-26"
-  creators?: { id: string; name: string; role?: string }[]; // Simplified creator info
-  collectionIds?: string[];
-  tags?: string[]; // For "New", "Featured", etc.
+  creators?: { id: string; name: string; role?: string }[]; // Populated from creator_ids
+  tags?: string[];
   cast?: { name: string; role: string; avatarUrl?: string }[];
-  seasons?: Season[]; // For series
+  seasons?: Season[]; // For series, optional
+  // Raw fields from JSON, might be useful for intermediate processing
+  creatorIds?: string[]; 
+  durationInSeconds?: number;
 }
 
 export interface Season {
@@ -37,23 +39,13 @@ export interface Creator {
   name: string;
   avatarUrl?: string;
   bio: string;
-  socialMediaLinks?: { platform: string; url: string }[];
+  email?: string;
+  socialMediaLinks?: { [platform: string]: string }; // Changed to object
   contentIds?: string[]; // IDs of content created by them
-}
-
-export interface Collection {
-  id: string;
-  name: string;
-  description: string;
-  contentIds: string[];
-  imageUrl?: string; // Optional image for the collection
 }
 
 export interface UserProfile extends FirebaseUser {
   // Extend with any custom profile fields if necessary
-  // For example:
-  // username?: string;
-  // bio?: string;
 }
 
 export interface Review {

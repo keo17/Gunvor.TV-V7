@@ -2,16 +2,13 @@ import { getContentById, getRelatedContent, getCreators } from "@/lib/data";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Clock, Film, Globe, CalendarDays, Users, Star, PlayCircle, Heart } from "lucide-react";
-import ContentRow from "@/components/content/content-row";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock, Film, Globe, CalendarDays, Users, Star } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import WishlistButton from "@/components/content/wishlist-button"; // Specialized button
-import PlayClientButton from "@/components/content/play-client-button"; // Client component for play button
-import ReviewSection from "@/components/content/review-section"; // Client component for reviews
+import WishlistButton from "@/components/content/wishlist-button"; 
+import PlayClientButton from "@/components/content/play-client-button"; 
+import ReviewSection from "@/components/content/review-section";
 
 interface MoviePageProps {
   params: {
@@ -26,7 +23,7 @@ export async function generateMetadata({ params }: MoviePageProps) {
   }
   return {
     title: `${movie.title} - Gunvor.TV`,
-    description: movie.description.substring(0, 160),
+    description: movie.description ? movie.description.substring(0, 160) : `Details for ${movie.title}`,
   };
 }
 
@@ -38,8 +35,8 @@ export default async function MoviePage({ params }: MoviePageProps) {
   }
 
   const relatedMovies = await getRelatedContent(movie.id, 'movie', movie.genre);
-  const allCreators = await getCreators();
-  const movieCreators = movie.creators?.map(mc => allCreators.find(ac => ac.id === mc.id)).filter(Boolean) || [];
+  // Creators are now populated directly in 'movie.creators' by getContentById
+  const movieCreators = movie.creators || [];
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -102,16 +99,38 @@ export default async function MoviePage({ params }: MoviePageProps) {
       <div className="grid md:grid-cols-12 gap-8">
         <div className="md:col-span-8 space-y-8">
           {/* Synopsis Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Synopsis</CardTitle>
-            </CardHeader>
-            <CardContent className="prose dark:prose-invert max-w-none">
-              <p>{movie.description}</p>
-            </CardContent>
-          </Card>
+          {movie.description && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Synopsis</CardTitle>
+              </CardHeader>
+              <CardContent className="prose dark:prose-invert max-w-none">
+                <p>{movie.description}</p>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* Cast & Crew Section */}
+          {/* Cast Section (from actors field) */}
+          {movie.cast && movie.cast.length > 0 && (
+             <Card>
+              <CardHeader>
+                <CardTitle>Cast</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+                  {movie.cast.map((actor) => (
+                    <div key={actor.name} className="text-sm">
+                      <span className="font-medium">{actor.name}</span>
+                       {/* <span className="text-muted-foreground"> as {actor.role}</span> */}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+
+          {/* Creators Section */}
           {movieCreators.length > 0 && (
             <Card>
               <CardHeader>
@@ -122,12 +141,13 @@ export default async function MoviePage({ params }: MoviePageProps) {
                   {movieCreators.map((creator) => creator && (
                     <Link key={creator.id} href={`/creator/${creator.id}`} className="group text-center">
                       <Avatar className="h-24 w-24 mx-auto mb-2 shadow-md group-hover:ring-2 group-hover:ring-primary transition-all">
-                        <AvatarImage src={creator.avatarUrl || `https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face" />
-                        <AvatarFallback>{creator.name.substring(0, 2)}</AvatarFallback>
+                        {/* Avatar URL might not be available for all creators in content item */}
+                        <AvatarImage src={`https://picsum.photos/seed/${creator.id}/100/100`} alt={creator.name} data-ai-hint="person face" />
+                        <AvatarFallback>{creator.name ? creator.name.substring(0, 2).toUpperCase() : "N/A"}</AvatarFallback>
                       </Avatar>
                       <p className="text-sm font-medium group-hover:text-primary">{creator.name}</p>
-                      {movie.creators?.find(mc => mc.id === creator.id)?.role && (
-                        <p className="text-xs text-muted-foreground">{movie.creators.find(mc => mc.id === creator.id)?.role}</p>
+                      {creator.role && (
+                        <p className="text-xs text-muted-foreground">{creator.role}</p>
                       )}
                     </Link>
                   ))}
@@ -151,7 +171,15 @@ export default async function MoviePage({ params }: MoviePageProps) {
               <div className="flex justify-between"><span>Type:</span> <span className="font-medium">{movie.type.charAt(0).toUpperCase() + movie.type.slice(1)}</span></div>
               {movie.releaseDate && <div className="flex justify-between"><span>Released:</span> <span className="font-medium">{movie.releaseDate}</span></div>}
               {movie.language && <div className="flex justify-between"><span>Language:</span> <span className="font-medium">{movie.language}</span></div>}
-              {/* Add more details if available */}
+              {movie.duration && <div className="flex justify-between"><span>Duration:</span> <span className="font-medium">{movie.duration}</span></div>}
+              {movie.tags && movie.tags.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-1 mt-2">Tags:</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {movie.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
           

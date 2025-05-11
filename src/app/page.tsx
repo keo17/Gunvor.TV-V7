@@ -1,6 +1,6 @@
-import { getContentItems, getCollections, getCreators } from "@/lib/data";
+import { getContentItems } from "@/lib/data";
 import ContentRow from "@/components/content/content-row";
-import type { Collection, ContentItem } from "@/types";
+import type { ContentItem } from "@/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,10 +8,11 @@ import { ChevronRight } from "lucide-react";
 
 export default async function HomePage() {
   const allContentItems = await getContentItems();
-  const collections = await getCollections();
-  // const creators = await getCreators(); // Example: If you want a row for creators' top content
-
-  const heroItem = allContentItems.length > 0 ? allContentItems[Math.floor(Math.random() * Math.min(allContentItems.length, 5))] : null;
+  
+  // Select a hero item: try to pick one with a good image and description
+  const heroItem = allContentItems.length > 0 
+    ? allContentItems.find(item => item.imageUrl && item.description && item.imageUrl !== `https://picsum.photos/seed/${item.id}/1200/500`) || allContentItems[Math.floor(Math.random() * allContentItems.length)] 
+    : null;
 
 
   return (
@@ -21,9 +22,9 @@ export default async function HomePage() {
           <Image
             src={heroItem.imageUrl || `https://picsum.photos/seed/${heroItem.id}/1200/500`}
             alt={heroItem.title}
-            layout="fill"
-            objectFit="cover"
-            className="brightness-75"
+            fill // Changed from layout="fill" and objectFit="cover"
+            className="object-cover brightness-75"
+            priority // Ensure hero image loads quickly
             data-ai-hint="movie scene"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 p-6 md:p-10 flex flex-col justify-end">
@@ -38,30 +39,17 @@ export default async function HomePage() {
         </div>
       )}
 
-      {collections.map((collection) => {
-        const collectionItems = allContentItems.filter(item => collection.contentIds.includes(item.id));
-        if (collectionItems.length === 0) return null;
-        return (
-          <ContentRow
-            key={collection.id}
-            title={collection.name}
-            items={collectionItems}
-            viewAllLink={`/collection/${collection.id}`}
-          />
-        );
-      })}
-
-      {/* Example: "All Movies" row */}
+      {/* "All Movies" row - assuming short_film maps to movie */}
       <ContentRow
         title="All Movies"
-        items={allContentItems.filter(item => item.type === 'movie').slice(0,15)} // Display first 15 movies
+        items={allContentItems.filter(item => item.type === 'movie').slice(0,18)} // Display first 18 movies
         viewAllLink="/movies"
       />
 
-      {/* Example: "All Series" row */}
+      {/* "All Series" row - this might be empty if no series data from new source */}
       <ContentRow
         title="All Series"
-        items={allContentItems.filter(item => item.type === 'series').slice(0,15)} // Display first 15 series
+        items={allContentItems.filter(item => item.type === 'series').slice(0,18)} // Display first 18 series
         viewAllLink="/series"
       />
     </div>
