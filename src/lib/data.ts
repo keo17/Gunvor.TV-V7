@@ -1,8 +1,8 @@
 
 import type { ContentItem, Creator } from '@/types';
 
-const CONTENT_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Done/abuur_media_short_films.json';
-const CREATORS_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Creators/creators.json';
+const CONTENT_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Done/Done/abuur_media_short_films.json';
+const CREATORS_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Creators/Creators/creators.json';
 
 let allCreatorsCache: Creator[] | null = null;
 let allContentItemsCache: ContentItem[] | null = null;
@@ -152,3 +152,4 @@ export async function searchContent(query: string): Promise<ContentItem[]> {
     (item.tags && item.tags.some(t => t.toLowerCase().includes(lowerCaseQuery)))
   );
 }
+
