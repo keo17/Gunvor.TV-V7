@@ -1,9 +1,10 @@
+
 import { getContentItems } from "@/lib/data";
 import WishlistContentCard from "@/components/content/wishlist-content-card";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ContentItem } from "@/types";
 import { notFound } from "next/navigation";
-import { Film, Tv, Video, Clapperboard, Drama, GlobeAmericas, Smile, Layers, Landmark, ShieldQuestion } from "lucide-react"; // Added more icons
+import { Film, Tv, Video, Clapperboard, Drama, Globe, Smile, Layers, Landmark, ShieldQuestion } from "lucide-react"; // Added more icons
 
 interface CollectionPageProps {
   params: {
@@ -34,7 +35,7 @@ const getCollectionDetails = (slug: string) => {
     case "recap-kdrama":
       return { title: "Recap Kdrama", icon: <Drama className="h-8 w-8 mr-3 text-primary" />, tags: ["kdrama", "recap"], type: "series" as ContentItem['type'] }; // Assuming recaps are series
     case "hollywood":
-      return { title: "Hollywood Movies & Series", icon: <GlobeAmericas className="h-8 w-8 mr-3 text-primary" />, tags: ["hollywood"], language: "English" };
+      return { title: "Hollywood Movies & Series", icon: <Globe className="h-8 w-8 mr-3 text-primary" />, tags: ["hollywood"], language: "English" };
     case "cartoon":
       return { title: "Cartoons", icon: <Smile className="h-8 w-8 mr-3 text-primary" />, tags: ["cartoon", "animation"], type: "series" as ContentItem['type'] };
     case "recaps": // General recaps
