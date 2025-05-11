@@ -122,8 +122,6 @@ export default function Header() {
       <DropdownMenuItem asChild><Link href="/collection/recaps">Recaps</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/collection/documentary">Documentary</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/collection/others">Others</Link></DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem asChild><Link href="/disclaimer">Disclaimer</Link></DropdownMenuItem>
     </>
   );
   
@@ -175,27 +173,28 @@ export default function Header() {
             <Input
               type="search"
               placeholder="Search content..."
-              className="pl-10"
+              className="pl-10 pr-4 py-2.5 rounded-full bg-muted/50 backdrop-blur-sm border-transparent focus:border-primary focus:ring-1 focus:ring-primary shadow-sm hover:shadow-md transition-all duration-200 text-sm"
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={handleSearchFocus}
             />
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             {isSearchFocused && searchQuery.length > 0 && (
-              <div className="absolute top-full mt-1 w-full rounded-md border bg-popover shadow-lg z-[60] max-h-60 overflow-y-auto">
+              <div className="absolute top-full mt-2 w-full rounded-md border bg-popover shadow-lg z-[60] max-h-72 overflow-y-auto py-1">
                 {searchResults.length > 0 ? (
                   searchResults.map((item) => (
                     <button
                       key={item.id}
-                      className="block w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground"
+                      className="block w-full text-left px-4 py-2.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
                       onClick={() => handleResultClick(item)}
                     >
                       {item.title}
+                       {item.releaseDate && <span className="text-xs text-muted-foreground ml-2">({new Date(item.releaseDate).getFullYear()})</span>}
                     </button>
                   ))
                 ) : (
                   searchQuery.length > 2 && (
-                    <div className="p-4 text-sm text-muted-foreground">
+                    <div className="p-4 text-sm text-muted-foreground text-center">
                       No results found for "{searchQuery}".
                     </div>
                   )
@@ -204,7 +203,7 @@ export default function Header() {
             )}
           </div>
           
-          <Button variant="ghost" size="icon" onClick={handleRandomShuffle} aria-label="Random Shuffle">
+          <Button variant="ghost" size="icon" onClick={handleRandomShuffle} aria-label="Random Shuffle" className="hover:bg-accent/20">
             <Shuffle className="h-5 w-5" />
           </Button>
 
@@ -214,6 +213,7 @@ export default function Header() {
             size="icon"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             aria-label="Toggle theme"
+            className="hover:bg-accent/20"
           >
             <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -221,7 +221,7 @@ export default function Header() {
 
           {/* User Auth Section */}
           {isDemoMode || !user ? (
-            <Button asChild>
+            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-5 py-2.5 text-sm font-medium">
               <Link href="/login">
                 <LogIn className="mr-2 h-4 w-4" /> Login
               </Link>
@@ -229,10 +229,10 @@ export default function Header() {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-accent/20">
+                  <Avatar className="h-9 w-9">
                     <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
-                    <AvatarFallback>
+                    <AvatarFallback className="text-base">
                       {user.displayName ? user.displayName.charAt(0).toUpperCase() : <UserCircle className="h-5 w-5" />}
                     </AvatarFallback>
                   </Avatar>
@@ -291,8 +291,6 @@ export default function Header() {
                       <DropdownMenuItem onSelect={() => {router.push("/collection/recaps"); setIsMobileMenuOpen(false);}}>Recaps</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/collection/documentary"); setIsMobileMenuOpen(false);}}>Documentary</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/collection/others"); setIsMobileMenuOpen(false);}}>Others</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onSelect={() => {router.push("/disclaimer"); setIsMobileMenuOpen(false);}}>Disclaimer</DropdownMenuItem>
                     </MobileDropdownTrigger>
                 </nav>
               </SheetContent>
@@ -303,3 +301,4 @@ export default function Header() {
     </header>
   );
 }
+
