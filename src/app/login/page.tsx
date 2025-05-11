@@ -56,7 +56,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Welcome Back!</CardTitle>
-          <CardDescription>Sign in to access your Content Compass profile.</CardDescription>
+          <CardDescription>Sign in to access your Gunvor.TV profile.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleEmailSignIn} className="space-y-6">
@@ -143,7 +143,7 @@ export function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
-          <CardDescription>Create your Content Compass account.</CardDescription>
+          <CardDescription>Create your Gunvor.TV account.</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">Sign up form will be here.</p>
@@ -162,7 +162,7 @@ export function ForgotPasswordPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
-          <CardDescription>Reset your Content Compass password.</CardDescription>
+          <CardDescription>Reset your Gunvor.TV password.</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">Forgot password form will be here.</p>

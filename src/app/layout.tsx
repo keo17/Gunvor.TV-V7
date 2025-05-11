@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+// import { GeistMono } from 'geist/font/mono'; // Removed as it was causing an error and not explicitly used.
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseAuthProvider } from '@/contexts/firebase-auth-context';
@@ -10,8 +10,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 
 export const metadata: Metadata = {
-  title: 'Content Compass',
-  description: 'Discover your next favorite movie or series.',
+  title: 'Gunvor.TV',
+  description: 'Discover your next favorite movie or series on Gunvor.TV.',
   icons: {
     icon: "/favicon.ico", // Assuming you'll add a favicon later
   },
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
+      <body className={`${GeistSans.variable} font-sans antialiased`}> {/* Removed GeistMono variable */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

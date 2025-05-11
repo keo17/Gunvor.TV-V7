@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: MoviePageProps) {
     return { title: "Movie Not Found" };
   }
   return {
-    title: `${movie.title} - Content Compass`,
+    title: `${movie.title} - Gunvor.TV`,
     description: movie.description.substring(0, 160),
   };
 }

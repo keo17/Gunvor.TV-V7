@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: CollectionPageProps) {
     return { title: "Collection Not Found" };
   }
   return {
-    title: `${collection.name} - Content Compass`,
+    title: `${collection.name} - Gunvor.TV`,
     description: collection.description.substring(0, 160),
   };
 }

@@ -71,7 +71,7 @@ export default function Header() {
       <div className="container flex h-16 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Film className="h-6 w-6 text-primary" />
-          <span className="font-bold sm:inline-block">ContentCompass</span>
+          <span className="font-bold sm:inline-block">Gunvor.TV</span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
         <div className="flex items-center text-sm text-muted-foreground">
           <Film className="h-5 w-5 mr-2 text-primary" />
-          <p>&copy; {currentYear} Content Compass. All rights reserved.</p>
+          <p>&copy; {currentYear} Gunvor.TV. All rights reserved.</p>
         </div>
         <nav className="flex items-center gap-4 sm:gap-6 text-sm">
           <Link href="/legal/terms" className="text-muted-foreground hover:text-foreground transition-colors">

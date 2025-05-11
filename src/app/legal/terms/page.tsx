@@ -13,8 +13,8 @@ export default function TermsOfServicePage() {
         </CardHeader>
         <CardContent className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert mx-auto">
           <p>
-            Welcome to Content Compass! These Terms of Service ("Terms") govern your access to and use of the
-            Content Compass website, applications, and services (collectively, the "Service"). Please read these
+            Welcome to Gunvor.TV! These Terms of Service ("Terms") govern your access to and use of the
+            Gunvor.TV website, applications, and services (collectively, the "Service"). Please read these
             Terms carefully before using the Service.
           </p>
 
@@ -26,7 +26,7 @@ export default function TermsOfServicePage() {
 
           <h2 className="text-xl font-semibold mt-6 mb-2">2. Use of the Service</h2>
           <p>
-            Content Compass grants you a limited, non-exclusive, non-transferable, revocable license to use
+            Gunvor.TV grants you a limited, non-exclusive, non-transferable, revocable license to use
             the Service for your personal, non-commercial use. You agree not to use the Service for any
             unlawful purpose or in any way that violates these Terms.
           </p>
@@ -46,17 +46,17 @@ export default function TermsOfServicePage() {
           <h2 className="text-xl font-semibold mt-6 mb-2">4. Content</h2>
           <p>
             The Service provides access to information about movies, series, and other media ("Content"). This
-            Content is sourced from public APIs and third-party providers. While Content Compass strives for
+            Content is sourced from public APIs and third-party providers. While Gunvor.TV strives for
             accuracy, we do not guarantee the accuracy, completeness, or timeliness of the Content.
           </p>
           <p>
-            The actual media files are hosted by third parties, and Content Compass is not responsible for their
+            The actual media files are hosted by third parties, and Gunvor.TV is not responsible for their
             availability or legality. Your interaction with any Content is at your own risk.
           </p>
 
           <h2 className="text-xl font-semibold mt-6 mb-2">5. User-Generated Content</h2>
           <p>
-            If you post reviews, comments, or other content ("User Content"), you grant Content Compass a
+            If you post reviews, comments, or other content ("User Content"), you grant Gunvor.TV a
             non-exclusive, royalty-free, perpetual, irrevocable, and fully sublicensable right to use,
             reproduce, modify, adapt, publish, translate, create derivative works from, distribute, and
             display such User Content throughout the world in any media.
@@ -84,12 +84,12 @@ export default function TermsOfServicePage() {
 
           <h2 className="text-xl font-semibold mt-6 mb-2">8. Disclaimers and Limitation of Liability</h2>
           <p>
-            The Service is provided "AS IS" and "AS AVAILABLE". Content Compass disclaims all warranties of
+            The Service is provided "AS IS" and "AS AVAILABLE". Gunvor.TV disclaims all warranties of
             any kind, express or implied. We do not warrant that the Service will be uninterrupted, secure,
             or error-free.
           </p>
           <p>
-            In no event shall Content Compass be liable for any indirect, incidental, special, consequential,
+            In no event shall Gunvor.TV be liable for any indirect, incidental, special, consequential,
             or punitive damages.
           </p>
 

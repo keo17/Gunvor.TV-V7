@@ -13,7 +13,7 @@ export default function DisclaimerPage() {
         </CardHeader>
         <CardContent className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert mx-auto">
           <p>
-            Welcome to Content Compass. The content provided on this platform, including but not limited to movies,
+            Welcome to Gunvor.TV. The content provided on this platform, including but not limited to movies,
             series, descriptions, and creator information, is for informational and entertainment purposes only.
           </p>
           
@@ -28,7 +28,7 @@ export default function DisclaimerPage() {
 
           <h2 className="text-xl font-semibold mt-6 mb-2">Content Availability</h2>
           <p>
-            Content Compass acts as a directory and discovery tool for media. The actual media files (videos, images)
+            Gunvor.TV acts as a directory and discovery tool for media. The actual media files (videos, images)
             are hosted on third-party platforms (e.g., Cloudflare R2). We do not host any media content on our
             servers. Availability of content is subject to the terms and conditions of these third-party hosting
             providers. We are not responsible for content takedowns or unavailability from these external sources.
@@ -37,16 +37,16 @@ export default function DisclaimerPage() {
           <h2 className="text-xl font-semibold mt-6 mb-2">External Links</h2>
           <p>
             Through this website, you may be able to link to other websites which are not under the control of
-            Content Compass. We have no control over the nature, content, and availability of those sites.
+            Gunvor.TV. We have no control over the nature, content, and availability of those sites.
             The inclusion of any links does not necessarily imply a recommendation or endorse the views expressed
             within them.
           </p>
           
           <h2 className="text-xl font-semibold mt-6 mb-2">User-Generated Content</h2>
           <p>
-            Some features of Content Compass may allow users to submit content, such as reviews or ratings.
+            Some features of Gunvor.TV may allow users to submit content, such as reviews or ratings.
             The views and opinions expressed in user-generated content are those of the authors and do not
-            necessarily reflect the official policy or position of Content Compass. We reserve the right to
+            necessarily reflect the official policy or position of Gunvor.TV. We reserve the right to
             remove any user-generated content that violates our terms of service or is deemed inappropriate.
           </p>
 
@@ -58,7 +58,7 @@ export default function DisclaimerPage() {
           </p>
           
           <p className="mt-6">
-            By using Content Compass, you signify your acceptance of this disclaimer. If you do not agree to
+            By using Gunvor.TV, you signify your acceptance of this disclaimer. If you do not agree to
             this disclaimer, please do not use our platform.
           </p>
         </CardContent>

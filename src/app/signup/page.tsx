@@ -50,7 +50,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Create Account</CardTitle>
-          <CardDescription>Join Content Compass today!</CardDescription>
+          <CardDescription>Join Gunvor.TV today!</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp} className="space-y-6">

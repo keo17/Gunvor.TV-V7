@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: CreatorPageProps) {
     return { title: "Creator Not Found" };
   }
   return {
-    title: `${creator.name} - Content Compass`,
+    title: `${creator.name} - Gunvor.TV`,
     description: creator.bio.substring(0, 160),
   };
 }

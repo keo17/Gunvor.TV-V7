@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: SeriesPageProps) {
     return { title: "Series Not Found" };
   }
   return {
-    title: `${series.title} - Content Compass`,
+    title: `${series.title} - Gunvor.TV`,
     description: series.description.substring(0, 160),
   };
 }
@@ -128,7 +128,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                       <AccordionContent>
                         <ul className="space-y-4 pt-2">
                           {season.episodes.map((episode, episodeIndex) => (
-                            <li key={episode.episodeNumber} className="p-4 rounded-md border hover:shadow-md transition-shadow">
+                            <li key={episode.episodeNumber} className="p-4 border rounded-md hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start">
                                 <div>
                                   <h4 className="font-medium text-lg">E{episode.episodeNumber}: {episode.title}</h4>
