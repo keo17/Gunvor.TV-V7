@@ -3,7 +3,7 @@ import WishlistContentCard from "@/components/content/wishlist-content-card";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ContentItem } from "@/types";
 import { notFound } from "next/navigation";
-import { Film, Tv, Video } from "lucide-react"; // Video for short films
+import { Film, Tv, Video, Clapperboard, Drama, GlobeAmericas, Smile, Layers, Landmark, ShieldQuestion } from "lucide-react"; // Added more icons
 
 interface CollectionPageProps {
   params: {
@@ -14,18 +14,36 @@ interface CollectionPageProps {
 // Helper function to get title and icon based on slug
 const getCollectionDetails = (slug: string) => {
   switch (slug) {
+    // Somali Collections
     case "somali-films":
       return { title: "Somali Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'] };
     case "somali-series":
       return { title: "Somali Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "series" as ContentItem['type'] };
     case "somali-short-films":
       return { title: "Somali Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'], maxDuration: 2400 }; // Max 40 mins
+    
+    // Hindi Collections
     case "hindi-films":
       return { title: "Hindi Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'] };
     case "hindi-series":
       return { title: "Hindi Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "series" as ContentItem['type'] };
     case "hindi-short-films":
-      return { title: "Hindi Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'], maxDuration: 2400 }; // Max 40 mins
+      return { title: "Hindi Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'], maxDuration: 2400 };
+
+    // New Collections from "More" dropdown
+    case "recap-kdrama":
+      return { title: "Recap Kdrama", icon: <Drama className="h-8 w-8 mr-3 text-primary" />, tags: ["kdrama", "recap"], type: "series" as ContentItem['type'] }; // Assuming recaps are series
+    case "hollywood":
+      return { title: "Hollywood Movies & Series", icon: <GlobeAmericas className="h-8 w-8 mr-3 text-primary" />, tags: ["hollywood"], language: "English" };
+    case "cartoon":
+      return { title: "Cartoons", icon: <Smile className="h-8 w-8 mr-3 text-primary" />, tags: ["cartoon", "animation"], type: "series" as ContentItem['type'] };
+    case "recaps": // General recaps
+      return { title: "Recaps", icon: <Clapperboard className="h-8 w-8 mr-3 text-primary" />, tags: ["recap"], type: "series" as ContentItem['type'] };
+    case "documentary":
+      return { title: "Documentaries", icon: <Landmark className="h-8 w-8 mr-3 text-primary" />, genre: ["Documentary"], type: "movie" as ContentItem['type'] };
+    case "others":
+      return { title: "Other Collections", icon: <Layers className="h-8 w-8 mr-3 text-primary" />, tags: ["other", "miscellaneous"] }; // General catch-all, may need refinement
+
     default:
       return null;
   }
@@ -63,6 +81,16 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     if (collectionDetails.maxDuration && (item.durationInSeconds === undefined || item.durationInSeconds >= collectionDetails.maxDuration)) {
         matches = false;
     }
+    if (collectionDetails.genre && !item.genre?.some(g => collectionDetails.genre?.includes(g))) {
+        matches = false;
+    }
+    if (collectionDetails.tags && !item.tags?.some(t => collectionDetails.tags?.includes(t.toLowerCase()))) {
+        if (collectionDetails.tags.some(ct => item.title.toLowerCase().includes(ct) || item.description.toLowerCase().includes(ct))){
+            // If tag not found in item.tags, check title/description for the tag
+        } else {
+            matches = false;
+        }
+    }
     return matches;
   });
 
@@ -80,12 +108,11 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       <Card className="mb-8 shadow-lg">
         <CardHeader>
           <div className="flex items-center mb-2">
-            {collectionDetails.icon}
+            {collectionDetails.icon || <ShieldQuestion className="h-8 w-8 mr-3 text-primary" />}
             <CardTitle className="text-3xl md:text-4xl font-bold">{collectionDetails.title}</CardTitle>
           </div>
           <CardDescription>Explore our collection of {collectionDetails.title.toLowerCase()}.</CardDescription>
         </CardHeader>
-        {/* TODO: Add Search and Sort controls here if needed later */}
       </Card>
 
       {filteredItems.length > 0 ? (
@@ -96,7 +123,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-xl text-muted-foreground">No content found for {collectionDetails.title.toLowerCase()}.</p>
+          <p className="text-xl text-muted-foreground">No content found for {collectionDetails.title.toLowerCase()}. Please check back later!</p>
         </div>
       )}
     </div>
