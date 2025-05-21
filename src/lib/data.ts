@@ -156,3 +156,11 @@ export async function searchContent(query: string): Promise<ContentItem[]> {
     (item.tags && item.tags.some(t => t.toLowerCase().includes(lowerCaseQuery)))
   );
 }
+
+// Helper to get a random content item, used for shuffle button
+export async function getRandomContentItem(): Promise<ContentItem | undefined> {
+  const items = await getContentItems();
+  if (items.length === 0) return undefined;
+  const randomIndex = Math.floor(Math.random() * items.length);
+  return items[randomIndex];
+}
