@@ -92,7 +92,7 @@ export async function getContentItems(): Promise<ContentItem[]> {
       id: item.id,
       title: item.title,
       description: item.description,
-      type: item.type === 'short_film' ? 'movie' : item.type,
+      type: (item.type === 'short_film' || item.type === 'movies') ? 'movie' : item.type,
       imageUrl: item.posterUrl || `https://picsum.photos/seed/${item.id}/400/600`, // Use item.posterUrl
       videoUrl: item.videoUrl, // Use item.videoUrl
       genre: resolvedGenre,
