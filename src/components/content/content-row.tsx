@@ -23,7 +23,7 @@ export default function ContentRow({ title, items, viewAllLink, displayLimit = 2
     <section className="mb-8 md:mb-12">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        {viewAllLink && items.length > 5 && ( // Only show "View All" if there are more than 5 items to make it meaningful
+        {viewAllLink && items.length > 4 && ( // Only show "View All" if there are more than 4 items
           <Button variant="link" asChild className="text-accent hover:text-accent/80">
             <Link href={viewAllLink}>
               View All <ChevronRight className="ml-1 h-4 w-4" />
@@ -32,8 +32,8 @@ export default function ContentRow({ title, items, viewAllLink, displayLimit = 2
         )}
       </div>
       <div className="relative">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-          {displayedItems.map((item) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-6"> {/* Adjusted grid classes for max 4 items per row and increased gap */}
+          {displayedItems.map((item: ContentItem | WishlistItem) => (
             // Using WishlistContentCard to handle wishlist state internally via useAuth
             <WishlistContentCard key={item.id} item={item} />
           ))}

@@ -106,7 +106,8 @@ export default async function MoviePage({ params }: MoviePageProps) {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {movie.behindTheScenesImages.map((src, index) => (
               <Image key={index} src={src} alt={`Behind the scenes ${index + 1}`} width={300} height={200} className="rounded-md object-cover aspect-video" data-ai-hint="movie scene still"/>
-            ))}
+            ))
+            }
           </div>
         </div>
       )}
@@ -157,8 +158,10 @@ export default async function MoviePage({ params }: MoviePageProps) {
       {relatedMovies.length > 0 && (
         <div className="mt-12">
           <h2 className="text-2xl font-semibold mb-4">More Like This</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-            {relatedMovies.slice(0, 6).map(relatedItem => (
+          {/* Ensure this grid uses classes that will result in 4 items per row on most screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-4">
+            {/* Slice the array to ensure only a maximum of 4 items are rendered */}
+            {relatedMovies.slice(0, 4).map(relatedItem => ( 
                <WishlistContentCard key={relatedItem.id} item={relatedItem} />
             ))}
           </div>

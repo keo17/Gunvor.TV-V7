@@ -51,7 +51,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
             alt={`${series.title} Poster`}
             width={400}
             height={600}
-            className="rounded-lg shadow-xl object-cover aspect-[2/3] w-full"
+            className="rounded-lg shadow-xl object-cover aspect-[3/2] w-full"
             priority
             data-ai-hint="series poster"
           />

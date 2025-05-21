@@ -1,7 +1,6 @@
-
 import type { ContentItem, Creator } from '@/types';
 
-const CONTENT_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Done/Done/abuur_media_short_films.json';
+const CONTENT_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/abuur_media_short_films.json';
 const CREATORS_JSON_URL = 'https://pub-dc5d8d6f2f7645ceb824919e8889fa94.r2.dev/Creators/Creators/creators.json';
 
 let allCreatorsCache: Creator[] | null = null;
@@ -145,12 +144,6 @@ export async function getRelatedContent(contentId: string, type?: 'movie' | 'ser
   return related.sort(() => 0.5 - Math.random()).slice(0, 10);
 }
 
-export async function getRandomContentItem(): Promise<ContentItem | undefined> {
-  const items = await getContentItems();
-  if (items.length === 0) return undefined;
-  const randomIndex = Math.floor(Math.random() * items.length);
-  return items[randomIndex];
-}
 
 export async function searchContent(query: string): Promise<ContentItem[]> {
   if (!query) return [];

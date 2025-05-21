@@ -62,28 +62,28 @@ export default function ContentCard({ item, currentWishlist, onWishlistChange }:
   };
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <Card className="group relative w-full overflow-hidden rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] focus-within:scale-[1.03] focus-within:shadow-xl">
+    <TooltipProvider delayDuration={100}>
+      <Card className="group relative w-72 overflow-hidden rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03] focus-within:scale-[1.03] focus-within:shadow-xl"> {/* Increased base width */}
         <Link href={`/${item.type}/${item.id}`} className="block">
           <CardHeader className="p-0">
-            <AspectRatio ratio={2 / 3}>
+            <AspectRatio ratio={3 / 2}> {/* Maintained aspect ratio */}
               <Image
                 src={item.imageUrl || `https://picsum.photos/seed/${item.id}/300/450`}
                 alt={item.title}
-                fill
+                fill={true}
                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 data-ai-hint="movie poster"
               />
             </AspectRatio>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10 group-hover:from-black/90 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 group-hover:from-black/80 transition-all duration-300" />
           </CardHeader>
-          <CardContent className="absolute bottom-0 left-0 right-0 p-4 z-10">
-            <CardTitle className="text-lg font-semibold text-white line-clamp-2 leading-tight mb-1 group-hover:text-accent transition-colors">
+          <CardContent className="absolute bottom-0 left-0 right-0 p-3 z-10">
+            <CardTitle className="text-base font-semibold text-white line-clamp-2 leading-snug mb-1 group-hover:text-accent transition-colors"> {/* Adjusted title font size */}
               {item.title}
             </CardTitle>
             <div className="flex flex-wrap gap-1 mb-2">
-              {item.genre?.slice(0, 2).map((g) => (
+              {item.genre?.slice(0, 1).map((g) => (
                 <Badge key={g} variant="secondary" className="text-xs backdrop-blur-sm bg-white/20 text-white border-white/30 group-hover:bg-accent/80 group-hover:text-accent-foreground">
                   {g}
                 </Badge>
@@ -103,7 +103,7 @@ export default function ContentCard({ item, currentWishlist, onWishlistChange }:
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 z-20 h-9 w-9 rounded-full bg-black/50 text-white hover:bg-accent hover:text-accent-foreground backdrop-blur-sm transition-all group-hover:opacity-100 md:opacity-0"
+              className="absolute top-2 right-2 z-20 h-8 w-8 rounded-full bg-black/50 text-white hover:bg-accent hover:text-accent-foreground backdrop-blur-sm transition-all group-hover:opacity-100 opacity-0 group-focus-within:opacity-100"
               onClick={handleWishlistToggle}
               aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             >
@@ -116,7 +116,7 @@ export default function ContentCard({ item, currentWishlist, onWishlistChange }:
         </Tooltip>
         
         {/* Play button overlay on hover */}
-        <Link href={`/${item.type}/${item.id}`} className="absolute inset-0 flex items-center justify-center z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/50 backdrop-blur-sm">
+        <Link href={`/${item.type}/${item.id}`} className="absolute inset-0 flex items-center justify-center z-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 bg-black/50 backdrop-blur-sm">
           <PlayCircle className="h-16 w-16 text-white/80 group-hover:text-white group-hover:scale-110 transition-transform" />
         </Link>
       </Card>

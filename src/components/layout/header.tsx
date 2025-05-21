@@ -1,9 +1,8 @@
-
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, UserCircle, LogIn, LogOut, Sun, Moon, Menu, Shuffle, ChevronDown, Tv, Video, Clapperboard, Layers, ShieldQuestion, Film } from "lucide-react";
+import { Search, UserCircle, LogIn, LogOut, Sun, Moon, Menu, ChevronDown, Tv, Video, Clapperboard, Layers, ShieldQuestion, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,8 +19,9 @@ import { useAuth } from "@/contexts/firebase-auth-context";
 import { signOutUser } from "@/lib/firebase/auth";
 import { useTheme } from "next-themes";
 import React, { useState, useEffect, useRef } from "react";
-import { getRandomContentItem, searchContent } from "@/lib/data";
+import { searchContent } from "@/lib/data";
 import type { ContentItem } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 const DropdownNavLink = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <DropdownMenu>
@@ -46,7 +46,7 @@ export default function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -86,13 +86,6 @@ export default function Header() {
     };
   }, [searchContainerRef]);
   
-  const handleRandomShuffle = async () => {
-    const randomItem = await getRandomContentItem();
-    if (randomItem) {
-      router.push(`/${randomItem.type}/${randomItem.id}`);
-    }
-    setIsMobileMenuOpen(false);
-  };
 
   const somaliNavItems = (
     <>
@@ -153,21 +146,21 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <span className="font-bold sm:inline-block">Gunvor.TV</span>
+      <div className="container flex h-24 items-center justify-between">
+ <Link href="/" className="flex items-center mr-auto pr-4 pl-4">
+          <span className="font-bold sm:inline-block text-4xl font-serif">Gunvor.TV</span> {/* Increased font size and changed font */}
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation Center */}
         <nav className="hidden md:flex items-center space-x-1 text-sm font-medium">
-          <DropdownNavLink label="Somali">{somaliNavItems}</DropdownNavLink>
-          <DropdownNavLink label="Hindi">{hindiNavItems}</DropdownNavLink>
-          <DropdownNavLink label="More">{moreNavItems}</DropdownNavLink>
+          <DropdownNavLink label={<span className="font-serif">Somali</span>}>{somaliNavItems}</DropdownNavLink> {/* Changed font */}
+          <DropdownNavLink label={<span className="font-serif">Hindi</span>}>{hindiNavItems}</DropdownNavLink> {/* Changed font */}
+          <DropdownNavLink label={<span className="font-serif">More</span>}>{moreNavItems}</DropdownNavLink> {/* Changed font */}
         </nav>
 
-        <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
+ <div className="flex flex-1 items-center justify-between space-x-2 md:space-x-4">
           {/* Search Bar */}
-          <div className="relative w-full max-w-xs lg:max-w-sm" ref={searchContainerRef}>
+ <div className="relative flex-1 max-w-xs lg:max-w-sm mx-auto" ref={searchContainerRef}>
             <Input
               type="search"
               placeholder="Search content..."
@@ -200,11 +193,10 @@ export default function Header() {
               </div>
             )}
           </div>
-          
-          <Button variant="ghost" size="icon" onClick={handleRandomShuffle} aria-label="Random Shuffle" className="hover:bg-accent/20">
-            <Shuffle className="h-5 w-5" />
-          </Button>
 
+          <div className="flex items-center space-x-2 md:space-x-4">
+            
+             
           {/* Theme Toggle */}
           <Button
             variant="ghost"
@@ -257,6 +249,7 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+          </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
