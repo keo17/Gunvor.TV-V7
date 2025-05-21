@@ -17,19 +17,19 @@ const getCollectionDetails = (slug: string) => {
   switch (slug) {
     // Somali Collections
     case "somali_films":
-      return { title: "Somali Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'] };
+      return { title: "Somali Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Somali", tags: ["Somali Movies"], type: "movies" as ContentItem['type'] };
     case "somali_series":
-      return { title: "Somali Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "series" as ContentItem['type'] };
+      return { title: "Somali Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Somali", tags: ["Somali Musalsal"], type: "series" as ContentItem['type'] };
     case "somali_short_film":
-      return { title: "Somali Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'], maxDuration: 2400, genre: ["Somali Short Film"] }; // Max 40 mins
+      return { title: "Somali Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Somali", tags: ["Somali Short Film"], type: "movies" as ContentItem['type'], maxDuration: 2400, genre: ['"Somali Short Film"'] }; // Max 40 mins
     
     // Hindi Collections
     case "hindi_films":
-      return { title: "Hindi Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'] };
+      return { title: "Hindi Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movies" as ContentItem['type'] };
     case "hindi_series":
       return { title: "Hindi Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "series" as ContentItem['type'] };
     case "hindi_short_films":
-      return { title: "Hindi Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'], maxDuration: 2400 };
+      return { title: "Hindi Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movies" as ContentItem['type'], maxDuration: 2400 };
 
     // New Collections from "More" dropdown
     case "recap_kdrama":
@@ -41,7 +41,7 @@ const getCollectionDetails = (slug: string) => {
     case "recaps": // General recaps
       return { title: "Recaps", icon: <Clapperboard className="h-8 w-8 mr-3 text-primary" />, tags: ["recap"], type: "series" as ContentItem['type'] };
     case "documentary":
-      return { title: "Documentaries", icon: <Landmark className="h-8 w-8 mr-3 text-primary" />, genre: ["Documentary"], type: "movie" as ContentItem['type'] };
+      return { title: "Documentaries", icon: <Landmark className="h-8 w-8 mr-3 text-primary" />, genre: ["Documentary"], type: "movies" as ContentItem['type'] };
     case "others":
       return { title: "Other Collections", icon: <Layers className="h-8 w-8 mr-3 text-primary" />, tags: ["other", "miscellaneous"] }; // General catch-all, may need refinement
 
