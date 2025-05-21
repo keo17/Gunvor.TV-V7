@@ -47,7 +47,7 @@ export default async function HomePage() {
       {/* "All Movies" row - assuming short_film maps to movie */}
       <ContentRow
         title="All Movies"
-        items={allContentItems.filter(item => item.type === 'movie' || item.type === 'short_film').slice(0,18)} // Display first 18 movies/short films
+        items={allContentItems.filter(item => item.type === 'movie' || item.type === 'somali_short_film').slice(0,18)} // Display first 18 movies/short films
         viewAllLink="/movies"
       />
 

@@ -89,17 +89,17 @@ export default function Header() {
 
   const somaliNavItems = (
     <>
-      <DropdownMenuItem asChild><Link href="/collection/somali-films">Somali Films</Link></DropdownMenuItem>
-      <DropdownMenuItem asChild><Link href="/collection/somali-series">Somali Musalsal</Link></DropdownMenuItem>
-      <DropdownMenuItem asChild><Link href="/collection/somali-short-films">Somali Short Films</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/somali_films">Somali Films</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/somali_series">Somali Musalsal</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/somali_short_film">Somali Short Films</Link></DropdownMenuItem>
     </>
   );
 
   const hindiNavItems = (
     <>
-      <DropdownMenuItem asChild><Link href="/collection/hindi-films">Hindi Films</Link></DropdownMenuItem>
-      <DropdownMenuItem asChild><Link href="/collection/hindi-series">Hindi Musalsal</Link></DropdownMenuItem>
-      <DropdownMenuItem asChild><Link href="/collection/hindi-short-films">Hindi Short Films</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/hindi_films">Hindi Films</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/hindi_series">Hindi Musalsal</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/hindi_short_films">Hindi Short Films</Link></DropdownMenuItem>
     </>
   );
 
@@ -108,7 +108,7 @@ export default function Header() {
       <DropdownMenuItem asChild><Link href="/movies">All Movies</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/series">All Series</Link></DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem asChild><Link href="/collection/recap-kdrama">Recap Kdrama</Link></DropdownMenuItem>
+      <DropdownMenuItem asChild><Link href="/collection/recap_kdrama">Recap Kdrama</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/collection/hollywood">Hollywood</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/collection/cartoon">Cartoon</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link href="/collection/recaps">Recaps</Link></DropdownMenuItem>
@@ -263,20 +263,20 @@ export default function Header() {
               <SheetContent side="right" className="w-[300px] sm:w-[400px] overflow-y-auto">
                 <nav className="flex flex-col space-y-1 mt-8">
                   <MobileDropdownTrigger label="Somali" icon={<Video className="h-5 w-5" />}>
-                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali-films"); setIsMobileMenuOpen(false);}}>Somali Films</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali-series"); setIsMobileMenuOpen(false);}}>Somali Musalsal</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali-short-films"); setIsMobileMenuOpen(false);}}>Somali Short Films</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali_films"); setIsMobileMenuOpen(false);}}>Somali Films</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali_series"); setIsMobileMenuOpen(false);}}>Somali Musalsal</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => {router.push("/collection/somali_short_film"); setIsMobileMenuOpen(false);}}>Somali Short Films</DropdownMenuItem>
                   </MobileDropdownTrigger>
                    <MobileDropdownTrigger label="Hindi" icon={<Film className="h-5 w-5" />}>
-                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi-films"); setIsMobileMenuOpen(false);}}>Hindi Films</DropdownMenuItem>
-                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi-series"); setIsMobileMenuOpen(false);}}>Hindi Musalsal</DropdownMenuItem>
-                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi-short-films"); setIsMobileMenuOpen(false);}}>Hindi Short Films</DropdownMenuItem>
+                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi_films"); setIsMobileMenuOpen(false);}}>Hindi Films</DropdownMenuItem>
+                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi_series"); setIsMobileMenuOpen(false);}}>Hindi Musalsal</DropdownMenuItem>
+                       <DropdownMenuItem onSelect={() => {router.push("/collection/hindi_short_films"); setIsMobileMenuOpen(false);}}>Hindi Short Films</DropdownMenuItem>
                     </MobileDropdownTrigger>
                    <MobileDropdownTrigger label="More" icon={<Layers className="h-5 w-5" />}>
                       <DropdownMenuItem onSelect={() => {router.push("/movies"); setIsMobileMenuOpen(false);}}>All Movies</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/series"); setIsMobileMenuOpen(false);}}>All Series</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onSelect={() => {router.push("/collection/recap-kdrama"); setIsMobileMenuOpen(false);}}>Recap Kdrama</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => {router.push("/collection/recap_kdrama"); setIsMobileMenuOpen(false);}}>Recap Kdrama</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/collection/hollywood"); setIsMobileMenuOpen(false);}}>Hollywood</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/collection/cartoon"); setIsMobileMenuOpen(false);}}>Cartoon</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => {router.push("/collection/recaps"); setIsMobileMenuOpen(false);}}>Recaps</DropdownMenuItem>

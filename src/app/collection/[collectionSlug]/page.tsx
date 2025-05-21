@@ -16,23 +16,23 @@ interface CollectionPageProps {
 const getCollectionDetails = (slug: string) => {
   switch (slug) {
     // Somali Collections
-    case "somali-films":
+    case "somali_films":
       return { title: "Somali Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'] };
-    case "somali-series":
+    case "somali_series":
       return { title: "Somali Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "series" as ContentItem['type'] };
-    case "somali-short-films":
-      return { title: "Somali Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'], maxDuration: 2400 }; // Max 40 mins
+    case "somali_short_film":
+      return { title: "Somali Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Somali", type: "movie" as ContentItem['type'], maxDuration: 2400, genre: ["Somali Short Film"] }; // Max 40 mins
     
     // Hindi Collections
-    case "hindi-films":
+    case "hindi_films":
       return { title: "Hindi Films", icon: <Film className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'] };
-    case "hindi-series":
+    case "hindi_series":
       return { title: "Hindi Musalsal", icon: <Tv className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "series" as ContentItem['type'] };
-    case "hindi-short-films":
+    case "hindi_short_films":
       return { title: "Hindi Short Films", icon: <Video className="h-8 w-8 mr-3 text-primary" />, language: "Hindi", type: "movie" as ContentItem['type'], maxDuration: 2400 };
 
     // New Collections from "More" dropdown
-    case "recap-kdrama":
+    case "recap_kdrama":
       return { title: "Recap Kdrama", icon: <Drama className="h-8 w-8 mr-3 text-primary" />, tags: ["kdrama", "recap"], type: "series" as ContentItem['type'] }; // Assuming recaps are series
     case "hollywood":
       return { title: "Hollywood Movies & Series", icon: <Globe className="h-8 w-8 mr-3 text-primary" />, tags: ["hollywood"], language: "English" };
@@ -82,13 +82,18 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     if (collectionDetails.maxDuration && (item.durationInSeconds === undefined || item.durationInSeconds >= collectionDetails.maxDuration)) {
         matches = false;
     }
+      // Add check for genre specifically for somali_short_films
+    if (collectionSlug === "somali_short_films" && item.genre && !item.genre.includes("Somali Short Film")) {
+       matches = false;
+    }
     if (collectionDetails.genre && !item.genre?.some(g => collectionDetails.genre?.includes(g))) {
         matches = false;
     }
+    // This check is now handled by the general collectionDetails.genre check above
+    // if (collectionSlug === "somali_short_films" && item.genre && !item.genre.includes("Somali Short Film")) {
     if (collectionDetails.tags && !item.tags?.some(t => collectionDetails.tags?.includes(t.toLowerCase()))) {
-        if (collectionDetails.tags.some(ct => item.title.toLowerCase().includes(ct) || item.description.toLowerCase().includes(ct))){
-            // If tag not found in item.tags, check title/description for the tag
-        } else {
+      if (collectionDetails.tags.some(ct => item.title.toLowerCase().includes(ct) || item.description.toLowerCase().includes(ct))){            // If tag not found in item.tags, check title/description for the tag
+      } else {
             matches = false;
         }
     }
